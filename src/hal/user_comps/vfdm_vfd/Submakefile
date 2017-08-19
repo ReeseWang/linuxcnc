@@ -1,0 +1,15 @@
+ifdef HAVE_LIBMODBUS3
+
+VFDM_SRCS = hal/user_comps/vfdm_vfd/vfdm_vfd.c
+VFDM_CFLAGS = -DDEBUG $(LIBMODBUS_CFLAGS)
+VFDM_LIBS = $(LIBMODBUS_LIBS) -lm
+
+$(call TOOBJSDEPS, $(VFDM_SRCS)) : EXTRAFLAGS += $(VFDM_CFLAGS)
+
+USERSRCS += $(VFDM_SRCS)
+../bin/vfdm_vfd: $(call TOOBJS, $(VFDM_SRCS)) ../lib/liblinuxcnchal.so.0 ../lib/liblinuxcncini.so.0
+	$(ECHO) Linking $(notdir $@)
+	$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(VFDM_LIBS) 
+
+TARGETS += ../bin/vfdm_vfd
+endif  # HAVE_LIBMODBUS3
